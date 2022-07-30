@@ -30,11 +30,17 @@ export const fetchSourceMap = async (url: string): Promise<Sources | undefined> 
         if (cand[0] === '/') {
           source = await fs.readFile(cand, 'utf-8')
         } else if (cand.startsWith('http://') || cand.startsWith('https://')) {
+          log('fetching', cand)
+          const prevEnvTlsReject = process.env['NODE_TLS_REJECT_UNAUTHORIZED']
+          ;(process.env as any)['NODE_TLS_REJECT_UNAUTHORIZED'] = 0
           const result = await fetch(cand)
+          ;(process.env as any)['NODE_TLS_REJECT_UNAUTHORIZED'] = prevEnvTlsReject
           source = await result.text()
         }
         if (source) break
-      } catch {}
+      } catch (error) {
+        log('fetch sourcemap error', error)
+      }
     }
 
     if (!source) throw new Error('No source')
