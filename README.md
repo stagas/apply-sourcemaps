@@ -1,5 +1,5 @@
 <h1>
-apply-sourcemaps <a href="https://npmjs.org/package/apply-sourcemaps"><img src="https://img.shields.io/badge/npm-v0.0.2-F00.svg?colorA=000"/></a> <a href="src"><img src="https://img.shields.io/badge/loc-231-FFF.svg?colorA=000"/></a> <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-F0B.svg?colorA=000"/></a>
+apply-sourcemaps <a href="https://npmjs.org/package/apply-sourcemaps"><img src="https://img.shields.io/badge/npm-v0.0.3-F00.svg?colorA=000"/></a> <a href="src"><img src="https://img.shields.io/badge/loc-237-FFF.svg?colorA=000"/></a> <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-F0B.svg?colorA=000"/></a>
 </h1>
 
 <p></p>
