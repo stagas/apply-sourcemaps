@@ -1,4 +1,5 @@
 import { Task } from 'event-toolkit'
+import { context } from 'fetch-h2'
 import * as fs from 'fs/promises'
 import { log } from './apply-sourcemaps'
 import { getSourceMap } from './get-source-map'
@@ -13,6 +14,10 @@ export interface Sources {
     sourcemap: RawSourceMap | undefined
   }
 }
+
+const { fetch } = context({
+  session: { rejectUnauthorized: false },
+})
 
 export const fetchSourceMap = async (url: string): Promise<Sources | undefined> => {
   if (sourceMaps.has(url)) return sourceMaps.get(url)
@@ -31,10 +36,7 @@ export const fetchSourceMap = async (url: string): Promise<Sources | undefined> 
           source = await fs.readFile(cand, 'utf-8')
         } else if (cand.startsWith('http://') || cand.startsWith('https://')) {
           log('fetching', cand)
-          const prevEnvTlsReject = process.env['NODE_TLS_REJECT_UNAUTHORIZED']
-          ;(process.env as any)['NODE_TLS_REJECT_UNAUTHORIZED'] = 0
           const result = await fetch(cand)
-          ;(process.env as any)['NODE_TLS_REJECT_UNAUTHORIZED'] = prevEnvTlsReject
           source = await result.text()
         }
         if (source) break
