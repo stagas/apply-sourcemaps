@@ -7,14 +7,15 @@ export const getCodeFrame = async (
 ) => {
   line = +line
   column = +column
-
   if (column > 500) return
 
   const consumer = await getConsumer(url)
   if (!consumer) return
 
   const orig = consumer.originalPositionFor({ line, column: column + 1 })
+
   const input = consumer.sourceContentFor(orig.source!)!
+
   const result = codeFrameColumns(input, {
     start: {
       line: orig.line ?? 1,

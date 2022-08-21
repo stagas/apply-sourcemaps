@@ -1,0 +1,34 @@
+
+exports[`applySourceMaps http external should work 1`] = `
+Array [
+  Array [
+    "onetwo",
+  ],
+  Array [
+    "/@fs/test/fixtures/a/index.ts:8:9",
+  ],
+]
+`;
+
+exports[`applySourceMaps http external should work 2`] = `
+Array [
+  "/@fs/test/fixtures/a/index.ts",
+]
+`;
+
+exports[`applySourceMaps http inline should work 1`] = `
+Array [
+  Array [
+    "onetwo",
+  ],
+  Array [
+    "/@fs/test/fixtures/a/index.ts:8:9",
+  ],
+]
+`;
+
+exports[`applySourceMaps http inline should work 2`] = `
+Array [
+  "/@fs/test/fixtures/a/index.ts",
+]
+`;

@@ -1,22 +1,21 @@
 import { SourceMapConsumer } from 'source-map'
 import { fetchSourceMap } from './fetch-source-map'
+import { createDeferredCache } from './util'
 
-const consumers = new Map<string, SourceMapConsumer | undefined>()
-
-export const getConsumer = async (url: string) => {
-  if (consumers.has(url)) return consumers.get(url)
-
+export const getConsumer = createDeferredCache(async url => {
   const sources = await fetchSourceMap(url)
-
   let consumer: SourceMapConsumer | undefined
 
+  // NOTE: this is confusing. the return types .source property is not the source contents
+  //  but it's the source filename. this can be confused with other properties where .source
+  //  is the source contents.
   if (sources?.sourceMap?.sourcemap) {
     consumer = await new SourceMapConsumer(sources.sourceMap.sourcemap)
   } else if (sources?.source) {
     consumer = {
       originalPositionFor(pos: { line: number; column: number }) {
         return {
-          source: sources.source,
+          source: url,
           name: url,
           line: pos.line,
           column: pos.column - 2,
@@ -28,7 +27,5 @@ export const getConsumer = async (url: string) => {
     } as unknown as SourceMapConsumer
   }
 
-  consumers.set(url, consumer)
-
   return consumer
-}
+})

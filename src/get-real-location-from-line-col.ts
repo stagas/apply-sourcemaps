@@ -1,50 +1,46 @@
-import { exists } from 'everyday-node'
-import path from 'path'
-import { log } from './apply-sourcemaps'
 import { getConsumer } from './get-consumer'
+import { createDeferredCache } from './util'
 
-export const getRealLocationFromUrlLineCol = async (
-  { originalUrl, url, line, column }: {
-    originalUrl: string
-    url: string
-    line: number | string
-    column: number | string
-  },
-  { root, href }: { root: string; href: string },
-) => {
-  line = +line
-  column = +column
+export interface RealLocation {
+  originalUrl: string
+  url: string
+  line: number | string
+  column: number | string
+}
 
-  if (column > 500) return
+const hashLocation = (r: RealLocation) => `${r.originalUrl}${r.url}${r.line}${r.column}`
 
-  const consumer = await getConsumer(url)
+export const getIt = createDeferredCache(
+  async (
+    _: string,
+    { originalUrl, url, line, column }: RealLocation,
+  ): Promise<RealLocation | void> => {
+    line = +line
+    column = +column
 
-  if (!consumer) {
+    const consumer = await getConsumer(url)
+
+    if (!consumer) return
+
+    const orig = consumer.originalPositionFor({ line, column: column + 1 })
+
     return {
       originalUrl,
-      url: href ? path.relative(root, url.replace('@fs', '').replace(href, '')) : url,
-      line,
-      column,
-    }
-  }
-
-  const cleanUrl = url.replace('@fs', '').replace(href, '')
-  log('clean url', cleanUrl)
-
-  const orig = consumer.originalPositionFor({ line, column: column + 1 })
-
-  log('originalPositionFor', url, orig)
-  const origTarget = path.resolve(path.dirname(cleanUrl), orig.source ?? '')
-  log('origTarget', origTarget)
-
-  if (await exists(origTarget)) {
-    return {
-      originalUrl,
-      url: path.relative(root, origTarget),
+      url: orig.source || url,
       line: orig.line ?? 1,
       column: (orig.column ?? 0) + 1,
     }
   }
+)
 
-  return { originalUrl, url, line, column }
+export const getRealLocationFromUrlLineCol = async (
+  real: RealLocation,
+) => {
+  if (+real.column > 500) return
+
+  const hash = hashLocation(real)
+
+  return getIt(hash, real)
 }
+
+getRealLocationFromUrlLineCol.clear = () => getIt.cache.clear()

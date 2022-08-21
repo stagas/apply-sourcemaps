@@ -1,12 +1,11 @@
-import { Task } from 'event-toolkit'
 import { context } from 'fetch-h2'
 import * as fs from 'fs/promises'
+
 import { log } from './apply-sourcemaps'
 import { getSourceMap } from './get-source-map'
+import { createDeferredCache } from './util'
 
 import type { RawSourceMap } from 'source-map'
-
-export const sourceMaps = new Map<string, Promise<Sources | undefined>>()
 
 export interface Sources {
   source: string
@@ -19,13 +18,9 @@ const { fetch } = context({
   session: { rejectUnauthorized: false },
 })
 
-export const fetchSourceMap = async (url: string): Promise<Sources | undefined> => {
-  if (sourceMaps.has(url)) return sourceMaps.get(url)
+export { fetch }
 
-  const task = Task()
-
-  sourceMaps.set(url, task.promise)
-
+export const fetchSourceMap = createDeferredCache(async (url: string): Promise<Sources | undefined> => {
   try {
     log('fetching url', url)
     let source!: string
@@ -47,17 +42,18 @@ export const fetchSourceMap = async (url: string): Promise<Sources | undefined> 
 
     if (!source) throw new Error('No source')
 
-    log('got source', source.length)
+    log('got source', url, source.length)
 
     const sourcemap = await getSourceMap(url, source)
 
-    task.resolve({
+    log('sourcemap for', url, sourcemap)
+
+    return {
       source,
       sourceMap: { sourcemap },
-    })
+    }
   } catch (error) {
-    task.resolve()
+    log('fetch sourcemap error', error)
+    return void 0
   }
-
-  return task.promise
-}
+})
