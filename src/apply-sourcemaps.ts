@@ -11,7 +11,7 @@ interface Result {
   column: number
 }
 
-export const applySourceMaps = async (x: string, mapFn: (url: string) => string) => {
+export const applySourceMaps = async (x: string, mapFn: (url: string) => string = x => x) => {
   log('searching in', x)
 
   const urls = parseUrls(x.toString()).filter(x => x.originalUrl.startsWith('http'))
