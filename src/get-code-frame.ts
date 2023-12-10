@@ -1,5 +1,5 @@
 import { codeFrameColumns } from '@babel/code-frame'
-import { getConsumer } from './get-consumer'
+import { getConsumer } from './get-consumer.ts'
 
 export const getCodeFrame = async (
   message: string,

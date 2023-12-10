@@ -1,6 +1,6 @@
 import Debug from 'debug'
-import { getRealLocationFromUrlLineCol } from './get-real-location-from-line-col'
-import { parseUrls } from './parse-urls'
+import { getRealLocationFromUrlLineCol } from './get-real-location-from-line-col.ts'
+import { parseUrls } from './parse-urls.ts'
 
 export const log = Debug('apply-sourcemaps')
 

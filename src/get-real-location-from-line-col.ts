@@ -1,5 +1,5 @@
-import { getConsumer } from './get-consumer'
-import { createDeferredCache } from './util'
+import { getConsumer } from './get-consumer.ts'
+import { createDeferredCache } from './util.ts'
 
 export interface RealLocation {
   originalUrl: string

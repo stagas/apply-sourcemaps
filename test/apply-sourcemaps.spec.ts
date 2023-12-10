@@ -1,7 +1,7 @@
 /** @env node */
 import * as path from 'path'
 import { puppito } from 'puppito'
-import { applySourceMaps, clearAllCaches } from '../src'
+import { applySourceMaps, clearAllCaches } from '../src/index.ts'
 
 const homedir = path.resolve(__dirname, '..')
 

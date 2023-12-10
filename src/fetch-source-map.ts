@@ -1,16 +1,16 @@
 import { context } from 'fetch-h2'
 import * as fs from 'fs/promises'
 
-import { log } from './apply-sourcemaps'
-import { getSourceMap } from './get-source-map'
-import { createDeferredCache } from './util'
+import { log } from './apply-sourcemaps.ts'
+import { getSourceMap } from './get-source-map.ts'
+import { createDeferredCache } from './util.ts'
 
 import type { RawSourceMap } from 'source-map'
 
 export interface Sources {
   source: string
   sourceMap: {
-    sourcemap: RawSourceMap | undefined
+    sourcemap: RawSourceMap | null | undefined
   }
 }
 

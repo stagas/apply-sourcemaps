@@ -1,6 +1,6 @@
 import { SourceMapConsumer } from 'source-map'
-import { fetchSourceMap } from './fetch-source-map'
-import { createDeferredCache } from './util'
+import { fetchSourceMap } from './fetch-source-map.ts'
+import { createDeferredCache } from './util.ts'
 
 export const getConsumer = createDeferredCache(async url => {
   const sources = await fetchSourceMap(url)

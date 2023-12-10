@@ -1,6 +1,6 @@
 import type { RawSourceMap } from 'source-map'
-import { log } from './apply-sourcemaps'
-import { fetch } from './fetch-source-map'
+import { log } from './apply-sourcemaps.ts'
+import { fetch } from './fetch-source-map.ts'
 
 const INLINE_SOURCEMAP_REGEX = /^data:application\/json[^,]+base64,/
 const SOURCEMAP_REGEX =
@@ -31,7 +31,7 @@ export const getSourceMap = async (url: string, content: string) => {
 
   log('decoding sourcemap for', url)
 
-  let rawSourceMap: RawSourceMap
+  let rawSourceMap: RawSourceMap | null
 
   // TODO: real fetch would handle data: urls but we use our own impl. here until that's ready
   if (sourceMapUrl.startsWith('data:')) {
@@ -55,7 +55,7 @@ function sourceMapFromDataUrl(url: string) {
   if (contentType === 'application/json') {
     const decodedData = base64 ? Buffer.from(data, 'base64').toString('utf8') : data
     try {
-      return JSON.parse(decodedData)
+      return JSON.parse(decodedData) as RawSourceMap
     } catch (err) {
       log(err)
       return null

@@ -1,4 +1,4 @@
-import { KeyedCache } from 'everyday-utils'
+import { KeyedCache } from 'utils'
 
 const caches = new Set<any>()
 
